@@ -1,2 +1,6 @@
 # image_changer
 A simple image manipulation library, nothing to serious, mainly to mess around and learn  
+
+
+
+this will be practically a wrapper for the image library, with added functionality
