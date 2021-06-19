@@ -11,5 +11,5 @@ Cargo.lock
 *.pdb
 
 
-/src/test_temp
-!/src/test_temp/.gitkeeper
+/test_temp
+!/test_temp/.gitkeeper
