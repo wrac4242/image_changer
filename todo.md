@@ -13,14 +13,19 @@ img::out_to_file(image); //outputs image to a file
 ```
 
 ## main todo list
-+ add functionality to load a specified image via its path
-+ add functionality to output the image to a specified file  
-    which if isnt set, just default it to something else
-
-+ add multiple filetype functionality - image libary already supports
 + add some basic filters to the code
 
++ add testing into the code, compare file hashes i guess?
++ move the code in main.rs into testing
+
 ### general questions
-+ how do we deal with images in memory? use the image library?
-+ how can we test the whole thing?
-+ how do we deal with different output types
++ how can we test the whole thing
+
+
+#### finished from todo list
++ ~~add functionality to load a specified image via its path~~
++ ~~add functionality to output the image to a specified file~~  
+
++ ~~add multiple filetype functionality - image libary already supports~~
+
++ ~~how do we deal with images in memory? use the image library?~~ - images library
