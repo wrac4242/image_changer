@@ -2,7 +2,7 @@
 pub mod img {
     extern crate image;
 
-    use image::{GenericImageView, DynamicImage};
+    use image:: DynamicImage;
     use image::io::Reader as ImageReader;
     use std::path::Path;
     use std::error;
@@ -35,7 +35,7 @@ pub mod img {
                 Ok(e) => e,
                 Err(a) => panic!("Error: {:?}", a)
             };
-            &self.image.save(file_path.as_path())?;
+            self.image.save(file_path.as_path())?;
             Ok(())
         }
     }
