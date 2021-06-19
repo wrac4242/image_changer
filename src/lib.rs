@@ -21,8 +21,8 @@ impl Img {
         })
     }
 
-    pub fn to_file(&self, out_path: &Path) -> io::Result<()> {
-
+    pub fn to_file(&self, out_path: &Path) -> Result<(), ImageError> {
+        &self.image.save(out_path)?;
         Ok(())
     }
 }
