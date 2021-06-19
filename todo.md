@@ -3,13 +3,13 @@ basic way of seeing what needs to be done and how to structure it
 
 ### how it should be interacted with
 ```
-use image_changer::Img;
+use image_changer::img;
 
-image = Img::new(<path to image>); //creates the image
+image = img::new(<path to image>); //creates the image
 
 image.to_black_white(); //converts image to black and white
 
-Img::out_to_file(image); //outputs image to a file
+img::out_to_file(image); //outputs image to a file
 ```
 
 ## main todo list
