@@ -22,19 +22,6 @@ pub struct Img {
 }
 
 impl Img {
-    pub fn new_from_file(in_file: &Path) -> Result<Img> {
-        let img: DynamicImage;
-        let file_path = match utils::absolute_path(in_file) {
-        Ok(e) => e,
-            Err(a) => panic!("Error: {:?}", a)
-        };
-        let raw = ImageReader::open(file_path.as_path())?.decode()?.to_rgba16();
-        img = DynamicImage::ImageRgba16(raw);
-
-        Ok(Img {
-            image: img,
-        })
-    }
 
     pub fn save(&self, out_path: &Path) -> Result<()> {
         let file_path = match utils::absolute_path(out_path) {
@@ -84,6 +71,20 @@ fn per_pixel(mut img: &mut Img, func: fn((u32, u32), Pixel) -> Pixel) -> Result<
     Ok(())
 }
 
+pub fn new_from_file(in_file: &Path) -> Result<Img> {
+    let img: DynamicImage;
+    let file_path = match utils::absolute_path(in_file) {
+    Ok(e) => e,
+        Err(a) => panic!("Error: {:?}", a)
+    };
+    let raw = ImageReader::open(file_path.as_path())?.decode()?.to_rgba16();
+    img = DynamicImage::ImageRgba16(raw);
+
+    Ok(Img {
+        image: img,
+    })
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -116,7 +117,7 @@ mod tests {
         let out_path = Path::new(&out_path_str);
         let expected_path = Path::new(&expected_path_str);
 
-        let mut image = match Img::new_from_file(in_path) {
+        let mut image = match new_from_file(in_path) {
             Ok(img) => img,
             Err(e) => panic!("Error: {:?}", e)
         };
