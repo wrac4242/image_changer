@@ -35,11 +35,10 @@ impl Img {
         self.image.save(file_path.as_path())?;
         Ok(())
     }
-}
 
-// takes in a closure and applies it for each pixel
-fn filter_on_each_pixel() -> Img {
-    todo!()
+    pub fn to_black_white(&self) {
+        todo!();
+    }
 }
 
 #[cfg(test)]
