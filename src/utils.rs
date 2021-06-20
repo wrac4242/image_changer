@@ -9,6 +9,7 @@ use image::DynamicImage;
 use image::Pixel as Pix;
 use std::error;
 use crate::img;
+use std::fmt;
 
 // Change the alias to `Box<error::Error>`.
 type Result<T> = std::result::Result<T, Box<dyn error::Error>>;
@@ -45,6 +46,30 @@ pub fn per_pixel(mut img: &mut img::Img, func: fn((u32, u32), img::Pixel) -> img
     img.image = DynamicImage::ImageRgba16(buffer);
     Ok(())
 }
+
+#[derive(Debug)]
+pub struct MyError {
+    details: String
+}
+
+impl MyError {
+    pub fn new(msg: &str) -> MyError {
+        MyError{details: msg.to_string()}
+    }
+}
+
+impl fmt::Display for MyError {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f,"{}",self.details)
+    }
+}
+
+impl error::Error for MyError {
+    fn description(&self) -> &str {
+        &self.details
+    }
+}
+
 
 #[cfg(test)]
 pub mod testing {
