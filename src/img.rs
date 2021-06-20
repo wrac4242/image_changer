@@ -28,7 +28,10 @@ impl Img {
             Ok(e) => e,
             Err(a) => panic!("Error: {:?}", a)
         };
-        self.image.save(file_path.as_path())?;
+        match self.image.save(file_path.as_path()) {
+            Ok(_) => (),
+            Err(e) => panic!("Error: {:?}", e)
+        };
         Ok(())
     }
 
