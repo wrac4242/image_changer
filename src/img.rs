@@ -28,7 +28,7 @@ impl Img {
         })
     }
 
-    pub fn to_file(&self, out_path: &Path) -> Result<()> {
+    pub fn save(&self, out_path: &Path) -> Result<()> {
         let file_path = match utils::absolute_path(out_path) {
             Ok(e) => e,
             Err(a) => panic!("Error: {:?}", a)
@@ -44,7 +44,7 @@ impl Img {
             let end_value = (0.299*r as f32 + 0.587*g as f32 + 0.114*b as f32) as u16;
             (end_value, end_value, end_value, a)
         });
-        
+
         match result {
             Ok(()) => Ok(()),
             Err(e) => Err(e)
@@ -98,7 +98,7 @@ mod tests {
             Err(e) => panic!("Error: {:?}", e)
         };
 
-        match image.to_file(out_path) {
+        match image.save(out_path) {
             Ok(_) => (),
             Err(e) => panic!("Error: {:?}", e)
         };

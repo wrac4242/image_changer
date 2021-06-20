@@ -19,5 +19,5 @@ fn main() {
     println!("foo");
     println!("Error: {:?}", image.to_black_white());
 
-    image.to_file(out_path);
+    image.save(out_path);
 }
