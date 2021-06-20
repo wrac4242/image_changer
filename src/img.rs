@@ -1,4 +1,3 @@
-extern crate image;
 
 use image::{DynamicImage, ImageBuffer};
 use image::Pixel as Pix;
@@ -22,18 +21,6 @@ pub struct Img {
 }
 
 impl Img {
-
-    pub fn save(&self, out_path: &Path) -> Result<()> {
-        let file_path = match utils::absolute_path(out_path) {
-            Ok(e) => e,
-            Err(a) => panic!("Error: {:?}", a)
-        };
-        match self.image.save(file_path.as_path()) {
-            Ok(_) => (),
-            Err(e) => panic!("Error: {:?}", e)
-        };
-        Ok(())
-    }
 
     #[allow(clippy::wrong_self_convention)]
     pub fn to_black_white(&mut self) -> Result<()> {
@@ -101,6 +88,18 @@ pub fn new_blank(colour: Pixel, width: u32, height: u32) -> Result<Img> {
     })
 }
 
+pub fn save(image: Img, out_path: &Path) -> Result<()> {
+    let file_path = match utils::absolute_path(out_path) {
+        Ok(e) => e,
+        Err(a) => panic!("Error: {:?}", a)
+    };
+    match image.image.save(file_path.as_path()) {
+        Ok(_) => (),
+        Err(e) => panic!("Error: {:?}", e)
+    };
+    Ok(())
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -140,7 +139,7 @@ mod tests {
 
         image = command(image);
 
-        match image.save(out_path) {
+        match save(image, out_path) {
             Ok(_) => (),
             Err(e) => panic!("Error: {:?}", e)
         };
@@ -169,7 +168,7 @@ mod tests {
             Err(e) => panic!("Error: {:?}", e)
         };
 
-        match image.save(out_path) {
+        match save(image, out_path) {
             Ok(_) => (),
             Err(e) => panic!("Error: {:?}", e)
         };
