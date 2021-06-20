@@ -45,6 +45,7 @@ fn filter_on_each_pixel() -> Img {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use std::fs;
 
     #[test]
     fn it_works() {
@@ -80,5 +81,6 @@ mod tests {
         };
 
         assert_eq!(output_hash, expected_hash);
+        let _ignore = fs::remove_file(out_path);
     }
 }
