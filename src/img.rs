@@ -21,7 +21,7 @@ pub struct Img {
 }
 
 impl Img {
-    pub fn new(in_file: &Path) -> Result<Img> {
+    pub fn new_from_file(in_file: &Path) -> Result<Img> {
         let img: DynamicImage;
         let file_path = match utils::absolute_path(in_file) {
         Ok(e) => e,
@@ -115,7 +115,7 @@ mod tests {
         let out_path = Path::new(&out_path_str);
         let expected_path = Path::new(&expected_path_str);
 
-        let mut image = match Img::new(in_path) {
+        let mut image = match Img::new_from_file(in_path) {
             Ok(img) => img,
             Err(e) => panic!("Error: {:?}", e)
         };
