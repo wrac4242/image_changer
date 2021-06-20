@@ -1,5 +1,7 @@
 //! A module to contain general public API items
 
+use std::error;
+use std::fmt;
 
 #[derive(Debug)]
 pub struct MyError {

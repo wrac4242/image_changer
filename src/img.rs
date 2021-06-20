@@ -7,7 +7,8 @@ use image::{DynamicImage, ImageBuffer};
 use image::io::Reader as ImageReader;
 use std::path::Path;
 use std::error;
-use crate::utils;
+use crate::{utils, misc};
+use num;
 
 // Change the alias to `Box<error::Error>`.
 type Result<T> = std::result::Result<T, Box<dyn error::Error>>;

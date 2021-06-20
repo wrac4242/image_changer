@@ -9,7 +9,6 @@ use image::DynamicImage;
 use image::Pixel as Pix;
 use std::error;
 use crate::img;
-use std::fmt;
 
 // Change the alias to `Box<error::Error>`.
 type Result<T> = std::result::Result<T, Box<dyn error::Error>>;
