@@ -38,25 +38,41 @@ impl Img {
     }
 
     pub fn to_black_white(&mut self) -> Result<()> {
-        //convert image to imagebuffer
-        let mut buffer = self.image.to_rgba16();
 
-        buffer.enumerate_pixels_mut().for_each(|(_x, _y, p)| {
-            //let r, g, b, a;
-            let (r, g, b, a) = p.channels4();
-            // each of these are u16s
-
+        let result = per_pixel(self, |(_x, _y), (r, g, b, a)| {
             // https://stackoverflow.com/a/596243
             let end_value = (0.299*r as f32 + 0.587*g as f32 + 0.114*b as f32) as u16;
-
-            *p = Pixel::from_channels(end_value, end_value, end_value, a);
-
-
+            (end_value, end_value, end_value, a)
         });
-        //convert back to image and save
-        self.image = DynamicImage::ImageRgba16(buffer);
-        Ok(())
+        
+        match result {
+            Ok(()) => Ok(()),
+            Err(e) => Err(e)
+        }
     }
+
+}
+
+// takes in (x, y),   (r, g, b, a)
+fn per_pixel(mut img: &mut Img, func: fn((u32, u32), (u16, u16, u16, u16))-> (u16, u16, u16, u16)) -> Result<()> {
+    //convert image to imagebuffer
+    let mut buffer = img.image.to_rgba16();
+
+    buffer.enumerate_pixels_mut().for_each(|(x, y, p)| {
+        //let r, g, b, a;
+        let inputs = p.channels4();
+        // each of these are u16s
+
+        // https://stackoverflow.com/a/596243
+        let (r, g, b, a) = func((x, y), inputs);
+
+        *p = Pixel::from_channels(r, g, b, a);
+
+
+    });
+    //convert back to image and save
+    img.image = DynamicImage::ImageRgba16(buffer);
+    Ok(())
 }
 
 #[cfg(test)]
