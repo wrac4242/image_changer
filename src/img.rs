@@ -1,6 +1,6 @@
 extern crate image;
 
-use image::DynamicImage;
+use image::{DynamicImage, Pixel};
 use image::io::Reader as ImageReader;
 use std::path::Path;
 use std::error;
@@ -37,8 +37,25 @@ impl Img {
         Ok(())
     }
 
-    pub fn to_black_white(&self) {
-        todo!();
+    pub fn to_black_white(&mut self) -> Result<()> {
+        //convert image to imagebuffer
+        let mut buffer = self.image.to_rgba16();
+
+        buffer.enumerate_pixels_mut().for_each(|(_x, _y, p)| {
+            //let r, g, b, a;
+            let (r, g, b, a) = p.channels4();
+            // each of these are u16s
+
+            // https://stackoverflow.com/a/596243
+            let end_value = (0.299*r as f32 + 0.587*g as f32 + 0.114*b as f32) as u16;
+
+            *p = Pixel::from_channels(end_value, end_value, end_value, a);
+
+
+        });
+        //convert back to image and save
+        self.image = DynamicImage::ImageRgba16(buffer);
+        Ok(())
     }
 }
 
