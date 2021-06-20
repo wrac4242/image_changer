@@ -17,6 +17,7 @@ img::out_to_file(image); //outputs image to a file
 
 + add testing into the code, compare file hashes i guess?
 + move filters into their own closures and pass into a main function
++ change all pixels to the closest of some given pixels
 
 ### general questions
 + how can we test the whole thing
