@@ -1,6 +1,6 @@
 extern crate image;
 
-use image::DynamicImage;
+use image::{DynamicImage, ImageBuffer};
 use image::Pixel as Pix;
 use image::io::Reader as ImageReader;
 use std::path::Path;
@@ -85,6 +85,18 @@ pub fn new_from_file(in_file: &Path) -> Result<Img> {
     })
 }
 
+pub fn new_blank(colour: Pixel, width: u32, height: u32) -> Result<Img> {
+    let img: DynamicImage;
+    let img_buff = ImageBuffer::from_fn(width, height, |_, _| {
+        image::Rgba([colour.r, colour.g, colour.b, colour.a])
+    });
+    img = DynamicImage::ImageRgba16(img_buff);
+
+    Ok(Img {
+        image: img,
+    })
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -92,12 +104,12 @@ mod tests {
 
     #[test]
     fn opening_saving() {
-        testing("black_square.png", "black_square.png", | image | image);
+        testing_convert("black_square.png", "black_square.png", | image | image);
     }
 
     #[test]
     fn black_white() {
-        testing("rainbow_gradient.png", "rainbow_gradient_bw.png", | mut image | {
+        testing_convert("rainbow_gradient.png", "rainbow_gradient_bw.png", | mut image | {
             match image.to_black_white() {
                 Ok(()) => (),
                 Err(e) => panic!("Error: {:?}", e)
@@ -106,7 +118,7 @@ mod tests {
         });
     }
 
-    fn testing(file_name: &str, expected_name: &str, command: fn(Img) -> Img) {
+    fn testing_convert(file_name: &str, expected_name: &str, command: fn(Img) -> Img) {
         //testing general closure for reuse
         let file_name = file_name.clone();
         let in_path_str = "./tests/test_images/".to_string() + file_name.clone();
@@ -123,6 +135,35 @@ mod tests {
         };
 
         image = command(image);
+
+        match image.save(out_path) {
+            Ok(_) => (),
+            Err(e) => panic!("Error: {:?}", e)
+        };
+
+        //check if the output file hash is correct
+        let output_hash = match utils::testing::hash_file(out_path) {
+            Ok(a) => a,
+            Err(e) => panic!("Error: {:?}", e)
+        };
+        let expected_hash = match utils::testing::hash_file(expected_path) {
+            Ok(a) => a,
+            Err(e) => panic!("Error: {:?}", e)
+        };
+
+        assert_eq!(output_hash, expected_hash);
+        let _ignore = fs::remove_file(out_path);
+    }
+
+    #[test]
+    fn new_blank_test() {
+        let out_path = Path::new("./tests/test_temp/new_blank.png");
+        let expected_path = Path::new("./tests/test_expected/new_blank.png");
+
+        let image = match new_blank(Pixel {r: 0, g: 65535, b: 65535, a: 65535}, 512, 512) {
+            Ok(a) => a,
+            Err(e) => panic!("Error: {:?}", e)
+        };
 
         match image.save(out_path) {
             Ok(_) => (),
