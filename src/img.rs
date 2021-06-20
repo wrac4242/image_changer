@@ -81,20 +81,38 @@ mod tests {
     use std::fs;
 
     #[test]
-    fn it_works() {
-        assert_eq!(2 + 2, 4);
+    fn opening_saving() {
+        testing("black_square.png", "black_square.png", | image | image);
     }
 
     #[test]
-    fn opening_saving() {
-        let in_path = Path::new("./tests/test_images/black_square.png");
-        let out_path = Path::new("./tests/test_temp/black_square.png");
-        let expected_path = Path::new("./tests/test_expected/black_square.png");
+    fn black_white() {
+        testing("rainbow_gradient.png", "rainbow_gradient_bw.png", | mut image | {
+            match image.to_black_white() {
+                Ok(()) => (),
+                Err(e) => panic!("Error: {:?}", e)
+            };
+            image
+        });
+    }
 
-        let image = match Img::new(in_path) {
+    fn testing(file_name: &str, expected_name: &str, command: fn(Img) -> Img) {
+        //testing general closure for reuse
+        let file_name = file_name.clone();
+        let in_path_str = "./tests/test_images/".to_string() + file_name.clone();
+        let out_path_str = "./tests/test_temp/".to_string() + expected_name.clone();
+        let expected_path_str = "./tests/test_expected/".to_string() + expected_name.clone();
+
+        let in_path = Path::new(&in_path_str);
+        let out_path = Path::new(&out_path_str);
+        let expected_path = Path::new(&expected_path_str);
+
+        let mut image = match Img::new(in_path) {
             Ok(img) => img,
             Err(e) => panic!("Error: {:?}", e)
         };
+
+        image = command(image);
 
         match image.save(out_path) {
             Ok(_) => (),
