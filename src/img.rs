@@ -15,10 +15,34 @@ type Result<T> = std::result::Result<T, Box<dyn error::Error>>;
 
 /// Pixel, the smallest part of an image
 pub struct Pixel {
-    pub r: u16,
-    pub g: u16,
-    pub b: u16,
-    pub a: u16,
+    pub(crate) r: u16,
+    pub(crate) g: u16,
+    pub(crate) b: u16,
+    pub(crate) a: u16,
+}
+
+impl Pixel {
+    /// creates pixels from 0-256 colour ranges
+    /// ```
+    /// use image_changer::img::*;
+    /// let pixel = Pixel::new_from_256(0, 255, 255, 255);
+    /// ```
+    ///## errors
+    /// `Out of Range`: one of the inputs is greater than 255
+    pub fn new_from_256(r: u16, g: u16, b: u16, a: u16) -> Result<Pixel>{
+        if r > 255 || g > 255 || b > 255 || a > 255 {
+            return Err(Box::new(misc::MyError::new("Out of Range")))
+        }
+
+        let scale = (u16::MAX as f64 / 255.0) as f64;
+        let r = num::clamp(r as f64 *scale, 0.0, u16::MAX as f64) as u16;
+        let g = num::clamp(g as f64 *scale, 0.0, u16::MAX as f64) as u16;
+        let b = num::clamp(b as f64 *scale, 0.0, u16::MAX as f64) as u16;
+        let a = num::clamp(a as f64 *scale, 0.0, u16::MAX as f64) as u16;
+
+        let pix_out = Pixel {r, g, b, a};
+        Ok(pix_out)
+    }
 }
 
 /// The image struct, it stores the image being processed
@@ -72,6 +96,19 @@ mod tests {
     use super::*;
     use std::fs;
     use crate::filters;
+
+    #[test]
+    fn pixel_as_256(){
+        let pixel_as_256 = match Pixel::new_from_256(0, 255, 255, 255) {
+            Ok(e) => e,
+            Err(e) => panic!("Error: {:?}", e)
+        };
+        let pixel_raw = Pixel {r: 0, g: 65535, b: 65535, a: 65535};
+        assert_eq!(pixel_as_256.r, pixel_raw.r);
+        assert_eq!(pixel_as_256.g, pixel_raw.g);
+        assert_eq!(pixel_as_256.b, pixel_raw.b);
+        assert_eq!(pixel_as_256.a, pixel_raw.a);
+    }
 
     #[test]
     fn opening_saving() {
