@@ -1,6 +1,6 @@
 extern crate image;
 
-use image:: DynamicImage;
+use image::DynamicImage;
 use image::io::Reader as ImageReader;
 use std::path::Path;
 use std::error;
@@ -20,7 +20,8 @@ impl Img {
         Ok(e) => e,
             Err(a) => panic!("Error: {:?}", a)
         };
-        img = ImageReader::open(file_path.as_path())?.decode()?;
+        let raw = ImageReader::open(file_path.as_path())?.decode()?.to_rgba16();
+        img = DynamicImage::ImageRgba16(raw);
 
         Ok(Img {
             image: img,
