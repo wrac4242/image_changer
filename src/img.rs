@@ -70,11 +70,11 @@ mod tests {
         };
 
         //check if the output file hash is correct
-        let output_hash = match utils::hash_file(out_path) {
+        let output_hash = match utils::testing::hash_file(out_path) {
             Ok(a) => a,
             Err(e) => panic!("Error: {:?}", e)
         };
-        let expected_hash = match utils::hash_file(expected_path) {
+        let expected_hash = match utils::testing::hash_file(expected_path) {
             Ok(a) => a,
             Err(e) => panic!("Error: {:?}", e)
         };
