@@ -4,7 +4,7 @@ use image:: DynamicImage;
 use image::io::Reader as ImageReader;
 use std::path::Path;
 use std::error;
-use crate::utils::paths;
+use crate::utils;
 
 // Change the alias to `Box<error::Error>`.
 type Result<T> = std::result::Result<T, Box<dyn error::Error>>;
@@ -16,7 +16,7 @@ pub struct Img {
 impl Img {
     pub fn new(in_file: &Path) -> Result<Img> {
         let img: DynamicImage;
-        let file_path = match paths::absolute_path(in_file) {
+        let file_path = match utils::absolute_path(in_file) {
         Ok(e) => e,
             Err(a) => panic!("Error: {:?}", a)
         };
@@ -28,7 +28,7 @@ impl Img {
     }
 
     pub fn to_file(&self, out_path: &Path) -> Result<()> {
-        let file_path = match paths::absolute_path(out_path) {
+        let file_path = match utils::absolute_path(out_path) {
             Ok(e) => e,
             Err(a) => panic!("Error: {:?}", a)
         };
