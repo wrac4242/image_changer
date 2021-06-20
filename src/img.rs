@@ -43,6 +43,16 @@ impl Pixel {
         let pix_out = Pixel {r, g, b, a};
         Ok(pix_out)
     }
+
+    pub fn pixel_to_256(&self) -> (u16, u16, u16, u16) {
+        let scale = (255.0 / u16::MAX as f64) as f64;
+        let r = num::clamp(self.r as f64 *scale, 0.0, u16::MAX as f64) as u16;
+        let g = num::clamp(self.g as f64 *scale, 0.0, u16::MAX as f64) as u16;
+        let b = num::clamp(self.b as f64 *scale, 0.0, u16::MAX as f64) as u16;
+        let a = num::clamp(self.a as f64 *scale, 0.0, u16::MAX as f64) as u16;
+
+        (r, g, b, a)
+    }
 }
 
 /// The image struct, it stores the image being processed
@@ -98,7 +108,7 @@ mod tests {
     use crate::filters;
 
     #[test]
-    fn pixel_as_256(){
+    fn pixel_from_256(){
         let pixel_as_256 = match Pixel::new_from_256(0, 255, 255, 255) {
             Ok(e) => e,
             Err(e) => panic!("Error: {:?}", e)
@@ -108,6 +118,28 @@ mod tests {
         assert_eq!(pixel_as_256.g, pixel_raw.g);
         assert_eq!(pixel_as_256.b, pixel_raw.b);
         assert_eq!(pixel_as_256.a, pixel_raw.a);
+    }
+
+    #[test]
+    #[should_panic]
+    fn pixel_from_256_panic(){
+        let _ = match Pixel::new_from_256(256, 22222, 16, 5) {
+            Ok(e) => e,
+            Err(e) => panic!("Error: {:?}", e)
+        };
+    }
+
+    fn pixel_to_256(){
+        let pix = match Pixel::new_from_256(65, 98, 42, 12) {
+            Ok(e) => e,
+            Err(e) => panic!("Error: {:?}", e)
+        }; // create pixel from set of values
+
+        let (r, g, b, a) = pix.pixel_to_256();
+        assert_eq!(r, 65);
+        assert_eq!(g, 98);
+        assert_eq!(b, 42);
+        assert_eq!(a, 12);
     }
 
     #[test]
