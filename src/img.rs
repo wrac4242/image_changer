@@ -129,6 +129,7 @@ mod tests {
         };
     }
 
+    #[test]
     fn pixel_to_256(){
         let pix = match Pixel::new_from_256(65, 98, 42, 12) {
             Ok(e) => e,
