@@ -9,15 +9,18 @@ fn main() {
     let in_path = Path::new("./tests/test_images/rainbow_gradient.png");
     let out_path = Path::new("./tests/test_temp/rainbow_gradient.png");
 
-    let image = crate::Img::new(in_path);
-
-    let mut image = match image {
+    let mut image = match crate::Img::new(in_path) {
         Ok(img) => img,
         Err(e) => panic!("Error: {:?}", e)
     };
 
-    println!("foo");
-    println!("Error: {:?}", image.to_black_white());
+    match image.to_black_white() {
+        Ok(()) => (),
+        Err(e) => panic!("Error: {:?}", e)
+    };
 
-    image.save(out_path);
+    match image.save(out_path) {
+        Ok(()) => (),
+        Err(e) => panic!("Error: {:?}", e)
+    };
 }

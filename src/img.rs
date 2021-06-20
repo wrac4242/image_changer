@@ -91,9 +91,7 @@ mod tests {
         let out_path = Path::new("./tests/test_temp/black_square.png");
         let expected_path = Path::new("./tests/test_expected/black_square.png");
 
-        let image = Img::new(in_path);
-
-        let image = match image {
+        let image = match Img::new(in_path) {
             Ok(img) => img,
             Err(e) => panic!("Error: {:?}", e)
         };
