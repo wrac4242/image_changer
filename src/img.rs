@@ -4,7 +4,6 @@
 
 
 use image::{DynamicImage, ImageBuffer};
-use image::Pixel as Pix;
 use image::io::Reader as ImageReader;
 use std::path::Path;
 use std::error;
@@ -23,54 +22,7 @@ pub struct Pixel {
 
 /// The image struct, it stores the image being processed
 pub struct Img {
-    image: DynamicImage,
-}
-
-impl Img {
-    /// Basic black and white filter that uses an estimated luminance colour
-    /// ```ignore
-    /// let image = new_blank(Pixel {r: 0, g: 65535, b: 65535}, 512, 512);
-    /// image.to_black_white();
-    /// save(image, Path::new("square.png"));
-    ///```
-
-    #[allow(clippy::wrong_self_convention)]
-    pub fn to_black_white(&mut self) -> Result<()> {
-
-        let result = per_pixel(self, |(_x, _y), pixel| {
-            // https://stackoverflow.com/a/596243
-            let end_value = (0.299*pixel.r as f32 + 0.587*pixel.g as f32 + 0.114*pixel.b as f32) as u16;
-            Pixel{r: end_value, g: end_value, b: end_value, a: pixel.a}
-        });
-
-        match result {
-            Ok(()) => Ok(()),
-            Err(e) => Err(e)
-        }
-    }
-
-}
-
-// takes in (x, y),   (r, g, b, a)
-fn per_pixel(mut img: &mut Img, func: fn((u32, u32), Pixel) -> Pixel) -> Result<()> {
-    //convert image to imagebuffer
-    let mut buffer = img.image.to_rgba16();
-
-    buffer.enumerate_pixels_mut().for_each(|(x, y, p)| {
-        //let r, g, b, a;
-        let (r, g, b, a) = p.channels4();
-        let inputs = Pixel {r, g, b, a};
-
-        // https://stackoverflow.com/a/596243
-        let output = func((x, y), inputs);
-
-        *p = Pix::from_channels(output.r, output.g, output.b, output.a);
-
-
-    });
-    //convert back to image and save
-    img.image = DynamicImage::ImageRgba16(buffer);
-    Ok(())
+    pub(crate) image: DynamicImage,
 }
 
 /// Opens a file as an Img
@@ -118,6 +70,7 @@ pub fn save(image: Img, out_path: &Path) -> Result<()> {
 mod tests {
     use super::*;
     use std::fs;
+    use crate::filters;
 
     #[test]
     fn opening_saving() {
@@ -127,7 +80,7 @@ mod tests {
     #[test]
     fn black_white() {
         testing_convert("rainbow_gradient.png", "rainbow_gradient_bw.png", | mut image | {
-            match image.to_black_white() {
+            match filters::to_black_white(&mut image) {
                 Ok(()) => (),
                 Err(e) => panic!("Error: {:?}", e)
             };
