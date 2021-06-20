@@ -23,7 +23,7 @@ pub fn absolute_path(path: impl AsRef<Path>) -> io::Result<PathBuf> {
 }
 
 // code from https://rust-lang-nursery.github.io/rust-cookbook/cryptography/hashing.html
-
+#[allow(dead_code)]
 fn sha256_digest<R: Read>(mut reader: R) -> io::Result<Digest> {
     let mut context = Context::new(&SHA256);
     let mut buffer = [0; 1024];
@@ -39,6 +39,7 @@ fn sha256_digest<R: Read>(mut reader: R) -> io::Result<Digest> {
     Ok(context.finish())
 }
 
+#[allow(dead_code)]
 pub fn hash_file(path: &Path) -> io::Result<String> {
     let input = File::open(path)?;
     let reader = BufReader::new(input);
