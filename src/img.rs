@@ -27,9 +27,8 @@ pub struct Img {
 }
 
 impl Img {
-
     /// Basic black and white filter that uses an estimated luminance colour
-    /// ```no_run
+    /// ```ignore
     /// let image = new_blank(Pixel {r: 0, g: 65535, b: 65535}, 512, 512);
     /// image.to_black_white();
     /// save(image, Path::new("square.png"));
