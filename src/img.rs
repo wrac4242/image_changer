@@ -1,3 +1,7 @@
+//! # img
+//!
+//! module for the creation and management of images.
+
 
 use image::{DynamicImage, ImageBuffer};
 use image::Pixel as Pix;
@@ -9,18 +13,27 @@ use crate::utils;
 // Change the alias to `Box<error::Error>`.
 type Result<T> = std::result::Result<T, Box<dyn error::Error>>;
 
+/// Pixel, the smallest part of an image
 pub struct Pixel {
-    r: u16,
-    g: u16,
-    b: u16,
-    a: u16,
+    pub r: u16,
+    pub g: u16,
+    pub b: u16,
+    pub a: u16,
 }
 
+/// The image struct, it stores the image being processed
 pub struct Img {
     image: DynamicImage,
 }
 
 impl Img {
+
+    /// Basic black and white filter that uses an estimated luminance colour
+    /// ```no_run
+    /// let image = new_blank(Pixel {r: 0, g: 65535, b: 65535}, 512, 512);
+    /// image.to_black_white();
+    /// save(image, Path::new("square.png"));
+    ///```
 
     #[allow(clippy::wrong_self_convention)]
     pub fn to_black_white(&mut self) -> Result<()> {
@@ -47,7 +60,6 @@ fn per_pixel(mut img: &mut Img, func: fn((u32, u32), Pixel) -> Pixel) -> Result<
     buffer.enumerate_pixels_mut().for_each(|(x, y, p)| {
         //let r, g, b, a;
         let (r, g, b, a) = p.channels4();
-        // each of these are u16s
         let inputs = Pixel {r, g, b, a};
 
         // https://stackoverflow.com/a/596243
@@ -62,6 +74,7 @@ fn per_pixel(mut img: &mut Img, func: fn((u32, u32), Pixel) -> Pixel) -> Result<
     Ok(())
 }
 
+/// Opens a file as an Img
 pub fn new_from_file(in_file: &Path) -> Result<Img> {
     let img: DynamicImage;
     let file_path = match utils::absolute_path(in_file) {
@@ -76,6 +89,7 @@ pub fn new_from_file(in_file: &Path) -> Result<Img> {
     })
 }
 
+/// Creates a new Img with a single set colour
 pub fn new_blank(colour: Pixel, width: u32, height: u32) -> Result<Img> {
     let img: DynamicImage;
     let img_buff = ImageBuffer::from_fn(width, height, |_, _| {
@@ -88,6 +102,7 @@ pub fn new_blank(colour: Pixel, width: u32, height: u32) -> Result<Img> {
     })
 }
 
+/// saves the given Img to a file
 pub fn save(image: Img, out_path: &Path) -> Result<()> {
     let file_path = match utils::absolute_path(out_path) {
         Ok(e) => e,
