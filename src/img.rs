@@ -9,6 +9,13 @@ use crate::utils;
 // Change the alias to `Box<error::Error>`.
 type Result<T> = std::result::Result<T, Box<dyn error::Error>>;
 
+struct Pixelinternal {
+    r: u16,
+    g: u16,
+    b: u16,
+    a: u16,
+}
+
 pub struct Img {
     image: DynamicImage,
 }
@@ -39,10 +46,10 @@ impl Img {
 
     pub fn to_black_white(&mut self) -> Result<()> {
 
-        let result = per_pixel(self, |(_x, _y), (r, g, b, a)| {
+        let result = per_pixel(self, |(_x, _y), pixel| {
             // https://stackoverflow.com/a/596243
-            let end_value = (0.299*r as f32 + 0.587*g as f32 + 0.114*b as f32) as u16;
-            (end_value, end_value, end_value, a)
+            let end_value = (0.299*pixel.r as f32 + 0.587*pixel.g as f32 + 0.114*pixel.b as f32) as u16;
+            Pixelinternal{r: end_value, g: end_value, b: end_value, a: pixel.a}
         });
 
         match result {
@@ -54,19 +61,20 @@ impl Img {
 }
 
 // takes in (x, y),   (r, g, b, a)
-fn per_pixel(mut img: &mut Img, func: fn((u32, u32), (u16, u16, u16, u16))-> (u16, u16, u16, u16)) -> Result<()> {
+fn per_pixel(mut img: &mut Img, func: fn((u32, u32), Pixelinternal) -> Pixelinternal) -> Result<()> {
     //convert image to imagebuffer
     let mut buffer = img.image.to_rgba16();
 
     buffer.enumerate_pixels_mut().for_each(|(x, y, p)| {
         //let r, g, b, a;
-        let inputs = p.channels4();
+        let (r, g, b, a) = p.channels4();
         // each of these are u16s
+        let inputs = Pixelinternal {r, g, b, a};
 
         // https://stackoverflow.com/a/596243
-        let (r, g, b, a) = func((x, y), inputs);
+        let output = func((x, y), inputs);
 
-        *p = Pixel::from_channels(r, g, b, a);
+        *p = Pixel::from_channels(output.r, output.g, output.b, output.a);
 
 
     });
