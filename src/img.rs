@@ -1,6 +1,7 @@
 extern crate image;
 
-use image::{DynamicImage, Pixel};
+use image::DynamicImage;
+use image::Pixel as Pix;
 use image::io::Reader as ImageReader;
 use std::path::Path;
 use std::error;
@@ -9,7 +10,7 @@ use crate::utils;
 // Change the alias to `Box<error::Error>`.
 type Result<T> = std::result::Result<T, Box<dyn error::Error>>;
 
-struct Pixelinternal {
+pub struct Pixel {
     r: u16,
     g: u16,
     b: u16,
@@ -49,7 +50,7 @@ impl Img {
         let result = per_pixel(self, |(_x, _y), pixel| {
             // https://stackoverflow.com/a/596243
             let end_value = (0.299*pixel.r as f32 + 0.587*pixel.g as f32 + 0.114*pixel.b as f32) as u16;
-            Pixelinternal{r: end_value, g: end_value, b: end_value, a: pixel.a}
+            Pixel{r: end_value, g: end_value, b: end_value, a: pixel.a}
         });
 
         match result {
@@ -61,7 +62,7 @@ impl Img {
 }
 
 // takes in (x, y),   (r, g, b, a)
-fn per_pixel(mut img: &mut Img, func: fn((u32, u32), Pixelinternal) -> Pixelinternal) -> Result<()> {
+fn per_pixel(mut img: &mut Img, func: fn((u32, u32), Pixel) -> Pixel) -> Result<()> {
     //convert image to imagebuffer
     let mut buffer = img.image.to_rgba16();
 
@@ -69,12 +70,12 @@ fn per_pixel(mut img: &mut Img, func: fn((u32, u32), Pixelinternal) -> Pixelinte
         //let r, g, b, a;
         let (r, g, b, a) = p.channels4();
         // each of these are u16s
-        let inputs = Pixelinternal {r, g, b, a};
+        let inputs = Pixel {r, g, b, a};
 
         // https://stackoverflow.com/a/596243
         let output = func((x, y), inputs);
 
-        *p = Pixel::from_channels(output.r, output.g, output.b, output.a);
+        *p = Pix::from_channels(output.r, output.g, output.b, output.a);
 
 
     });
