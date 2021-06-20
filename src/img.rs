@@ -35,6 +35,7 @@ impl Img {
         Ok(())
     }
 
+    #[allow(clippy::wrong_self_convention)]
     pub fn to_black_white(&mut self) -> Result<()> {
 
         let result = per_pixel(self, |(_x, _y), pixel| {
