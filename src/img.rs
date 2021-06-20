@@ -41,3 +41,44 @@ impl Img {
 fn filter_on_each_pixel() -> Img {
     todo!()
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn it_works() {
+        assert_eq!(2 + 2, 4);
+    }
+
+    #[test]
+    fn opening_saving() {
+        let in_path = Path::new("./tests/test_images/black_square.png");
+        let out_path = Path::new("./tests/test_temp/black_square.png");
+        let expected_path = Path::new("./tests/test_expected/black_square.png");
+
+        let image = Img::new(in_path);
+
+        let image = match image {
+            Ok(img) => img,
+            Err(e) => panic!("Error: {:?}", e)
+        };
+
+        match image.to_file(out_path) {
+            Ok(_) => (),
+            Err(e) => panic!("Error: {:?}", e)
+        };
+
+        //check if the output file hash is correct
+        let output_hash = match utils::hash_file(out_path) {
+            Ok(a) => a,
+            Err(e) => panic!("Error: {:?}", e)
+        };
+        let expected_hash = match utils::hash_file(expected_path) {
+            Ok(a) => a,
+            Err(e) => panic!("Error: {:?}", e)
+        };
+
+        assert_eq!(output_hash, expected_hash);
+    }
+}
