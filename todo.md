@@ -16,7 +16,7 @@ img::out_to_file(image); //outputs image to a file
 + add some basic filters to the code
 
 + add testing into the code, compare file hashes i guess?
-+ move the code in main.rs into testing
++ move filters into their own closures and pass into a main function
 
 ### general questions
 + how can we test the whole thing
@@ -29,3 +29,5 @@ img::out_to_file(image); //outputs image to a file
 + ~~add multiple filetype functionality - image libary already supports~~
 
 + ~~how do we deal with images in memory? use the image library?~~ - images library
+
+~~+ move the code in main.rs into testing~~
