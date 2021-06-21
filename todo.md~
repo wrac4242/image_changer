@@ -14,14 +14,7 @@ img::out_to_file(image); //outputs image to a file
 
 ## main todo list
 + add some basic filters to the code
-- replace all of colour 1 with colour 2
-- black white to a different colour
-- thermal like camera
-- background filter
-- blur filter 
 
-+ add a way to run 3x3 filters on it
-- closure that takes in an array of 9 pixels, allows doing stuff to said array
 + add testing into the code, compare file hashes i guess?
 + change all pixels to the closest of some given pixels
 + custom filter, allow giving a closure
