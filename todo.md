@@ -25,3 +25,6 @@ img::out_to_file(image); //outputs image to a file
 + add testing into the code, compare file hashes i guess?
 + change all pixels to the closest of some given pixels
 + custom filter, allow giving a closure
++ copy parts of the image
++ allow image overlaying at set coordinates
++ do a function on a set area of the image
