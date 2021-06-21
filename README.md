@@ -1,6 +1,6 @@
 # image_changer
 A simple image manipulation library, nothing to serious, mainly to mess around and learn  
-[cargo link](https://crates.io/crates/image_changer)
+[crates.io link](https://crates.io/crates/image_changer)
 
 
 
