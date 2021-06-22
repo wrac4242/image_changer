@@ -100,6 +100,13 @@ pub fn save(image: Img, out_path: &Path) -> Result<()> {
     Ok(())
 }
 
+
+/// gives the dimensions of the inputted image
+pub fn dimensions(image: &Img) -> (u32, u32) {
+    let buffer = image.image.to_rgba16();
+    buffer.dimensions()
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -156,6 +163,15 @@ mod tests {
             };
             image
         });
+    }
+
+    #[test]
+    fn dimention() {
+        let image = match new_blank(Pixel {r: 0, g: 65535, b: 65535, a: 65535}, 512, 512) {
+            Ok(a) => a,
+            Err(e) => panic!("Error: {:?}", e)
+        };
+        assert_eq!(dimensions(&image), (512, 512));
     }
 
     fn testing_convert(file_name: &str, expected_name: &str, command: fn(Img) -> Img) {

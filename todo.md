@@ -20,7 +20,8 @@ img::out_to_file(image); //outputs image to a file
 - background filter
 - blur filter
 
-+ add a command to give image dimensions 
++ add information commands to the code
+
 + add a way to run 3x3 filters on it
 - closure that takes in an array of 9 pixels, allows doing stuff to said array
 + add testing into the code, compare file hashes i guess?
