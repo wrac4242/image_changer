@@ -1,17 +1,6 @@
 # To Do list
 basic way of seeing what needs to be done and how to structure it
 
-### how it should be interacted with
-```
-use image_changer::img;
-
-image = img::new(<path to image>); //creates the image
-
-image.to_black_white(); //converts image to black and white
-
-img::out_to_file(image); //outputs image to a file
-```
-
 ## main todo list
 + add some basic filters to the code
 - replace all of colour 1 with colour 2
@@ -21,12 +10,26 @@ img::out_to_file(image); //outputs image to a file
 - blur filter
 
 + add information commands to the code
+- average colour?
+- total amount of different colours?
+- most common colour?
 
 + add a way to run 3x3 filters on it
 - closure that takes in an array of 9 pixels, allows doing stuff to said array
-+ add testing into the code, compare file hashes i guess?
+- or a vector array?
+
 + change all pixels to the closest of some given pixels
+- takes in vector array?
+- how do we deal with closest?
+
 + custom filter, allow giving a closure
+- this is not that hard, requires exposing some of the underlying code
+
 + copy parts of the image
+- export set portions of the image
+
 + allow image overlaying at set coordinates
-+ do a function on a set area of the image
+- how would you combine it?
+- option for overlaying or average of the two colours?
+
++ do a function on a set area of the image - doable with just an if statement i guess
