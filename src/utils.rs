@@ -5,13 +5,10 @@ use std::path::{PathBuf, Path};
 
 use path_clean::PathClean;
 
-use image::DynamicImage;
-use image::Pixel as Pix;
-use std::error;
-use crate::img;
+// use std::error;
 
 // Change the alias to `Box<error::Error>`.
-type Result<T> = std::result::Result<T, Box<dyn error::Error>>;
+// type Result<T> = std::result::Result<T, Box<dyn error::Error>>;
 
 pub fn absolute_path(path: impl AsRef<Path>) -> io::Result<PathBuf> {
     let path = path.as_ref();
@@ -24,28 +21,6 @@ pub fn absolute_path(path: impl AsRef<Path>) -> io::Result<PathBuf> {
 
     Ok(absolute_path)
 }
-
-pub fn per_pixel(mut img: &mut img::Img, func: fn((u32, u32), img::Pixel) -> img::Pixel) -> Result<()> {
-    //convert image to imagebuffer
-    let mut buffer = img.image.to_rgba16();
-
-    buffer.enumerate_pixels_mut().for_each(|(x, y, p)| {
-        //let r, g, b, a;
-        let (r, g, b, a) = p.channels4();
-        let inputs = img::Pixel {r, g, b, a};
-
-        // https://stackoverflow.com/a/596243
-        let output = func((x, y), inputs);
-
-        *p = Pix::from_channels(output.r, output.g, output.b, output.a);
-
-
-    });
-    //convert back to image and save
-    img.image = DynamicImage::ImageRgba16(buffer);
-    Ok(())
-}
-
 
 #[cfg(test)]
 pub mod testing {

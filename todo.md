@@ -22,9 +22,6 @@ basic way of seeing what needs to be done and how to structure it
 - takes in vector array?
 - how do we deal with closest?
 
-+ custom filter, allow giving a closure
-- this is not that hard, requires exposing some of the underlying code
-
 + copy parts of the image
 - export set portions of the image
 
