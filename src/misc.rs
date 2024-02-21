@@ -4,23 +4,25 @@ use std::error;
 use std::fmt;
 
 #[derive(Debug)]
-pub struct MyError {
-    details: String
+pub struct ImgConversionError {
+    details: String,
 }
 
-impl MyError {
-    pub fn new(msg: &str) -> MyError {
-        MyError{details: msg.to_string()}
+impl ImgConversionError {
+    pub fn new(msg: &str) -> ImgConversionError {
+        ImgConversionError {
+            details: msg.to_string(),
+        }
     }
 }
 
-impl fmt::Display for MyError {
+impl fmt::Display for ImgConversionError {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f,"{}",self.details)
+        write!(f, "{}", self.details)
     }
 }
 
-impl error::Error for MyError {
+impl error::Error for ImgConversionError {
     fn description(&self) -> &str {
         &self.details
     }

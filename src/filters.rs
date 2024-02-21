@@ -38,7 +38,7 @@ pub fn to_black_white(image: &mut img::Img) -> Result<()> {
 ///    img::Pixel{r: end_value, g: end_value, b: end_value, a: pixel.a}
 /// });
 /// ```
-pub fn per_pixel(mut img: &mut img::Img, func: fn((u32, u32), img::Pixel) -> img::Pixel) -> Result<()> {
+pub fn per_pixel(img: &mut img::Img, func: fn((u32, u32), img::Pixel) -> img::Pixel) -> Result<()> {
     //convert image to imagebuffer
     let mut buffer = img.image.to_rgba16();
 

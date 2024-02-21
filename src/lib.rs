@@ -2,11 +2,11 @@
 //!
 //! A library for basic image filtering.
 
-pub mod img;
 pub mod filters;
+pub mod img;
 pub mod misc;
-pub(self) mod utils;
+mod utils;
 
-pub use img::Img;
-pub use img::save;
 pub use img::new_from_file;
+pub use img::save;
+pub use img::Img;
