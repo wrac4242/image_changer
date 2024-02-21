@@ -169,7 +169,7 @@ mod tests {
     }
 
     #[test]
-    fn dimention() {
+    fn dimension() {
         let image = match new_blank(
             Pixel {
                 r: 0,

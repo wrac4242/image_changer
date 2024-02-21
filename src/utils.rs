@@ -1,7 +1,7 @@
 //from https://stackoverflow.com/a/54817755
 use std::env;
 use std::io;
-use std::path::{PathBuf, Path};
+use std::path::{Path, PathBuf};
 
 use path_clean::PathClean;
 
@@ -17,7 +17,8 @@ pub fn absolute_path(path: impl AsRef<Path>) -> io::Result<PathBuf> {
         path.to_path_buf()
     } else {
         env::current_dir()?.join(path)
-    }.clean();
+    }
+    .clean();
 
     Ok(absolute_path)
 }
