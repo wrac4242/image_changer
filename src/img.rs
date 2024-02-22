@@ -55,10 +55,10 @@ impl Pixel {
     }
 
     pub fn pixel_distance_squared(&self, distance_from: &Pixel) -> u16 {
-        u16::pow(self.r - distance_from.r, 2)
-            + u16::pow(self.g - distance_from.g, 2)
-            + u16::pow(self.b - distance_from.b, 2)
-            + u16::pow(self.a - distance_from.a, 2)
+        u16::pow(self.r.abs_diff(distance_from.r), 2)
+            + u16::pow(self.g.abs_diff(distance_from.g), 2)
+            + u16::pow(self.b.abs_diff(distance_from.b), 2)
+            + u16::pow(self.a.abs_diff(distance_from.a), 2)
     }
 }
 
@@ -311,7 +311,7 @@ mod tests {
                         a: 0
                     })
             ),
-            u16::pow(5, 2)
+            5 * 5
         );
         assert_eq!(
             base_pix.pixel_distance_squared(
@@ -323,7 +323,7 @@ mod tests {
                         a: 7
                     })
             ),
-            u16::pow(3 + 6 + 2 + 7, 2)
+            3 * 3 + 6 * 6 + 2 * 2 + 7 * 7
         );
         assert_eq!(
             base_pix.pixel_distance_squared(
@@ -347,7 +347,7 @@ mod tests {
                         a: 0
                     })
             ),
-            u16::pow(1 + 5, 2)
+            1 * 1 + 5 * 5
         );
     }
 }
