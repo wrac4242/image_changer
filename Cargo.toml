@@ -8,6 +8,7 @@ repository = "https://github.com/wrac4242/image_changer"
 license = "GPL-3.0-or-later"
 keywords = ["image", "manipulation"]
 homepage = "https://github.com/wrac4242/image_changer"
+exclude = ["todo.md", ".github/*"]
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
