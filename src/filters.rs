@@ -37,7 +37,7 @@ pub fn to_black_white(image: &mut Img) -> Result<()> {
 /// let startColour = Pixel {r: 0, g: 65535, b: 65535};
 /// let image = new_blank(startColour, 512, 512);
 /// let endColour = Pixel {r: 65535, g: 0, b: 0};
-/// image = filters::colour_replacement(image, startColour, endColour);
+/// image = filters::colour_replacement(image, startColour, endColour, 5);
 /// save(image, Path::new("square.png"));
 ///```
 

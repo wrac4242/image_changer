@@ -6,6 +6,7 @@ use crate::{misc, utils};
 use image::io::Reader as ImageReader;
 use image::{DynamicImage, ImageBuffer};
 use std::error;
+use std::ops;
 use std::path::Path;
 
 // Change the alias to `Box<error::Error>`.
@@ -58,6 +59,18 @@ impl Pixel {
             + u16::pow(self.g - distance_from.g, 2)
             + u16::pow(self.b - distance_from.b, 2)
             + u16::pow(self.a - distance_from.a, 2)
+    }
+}
+
+impl ops::Add for Pixel {
+    type Output = Pixel;
+    fn add(self, rhs: Pixel) -> Pixel {
+        Pixel {
+            r: self.r + rhs.r,
+            g: self.g + rhs.g,
+            b: self.b + rhs.b,
+            a: self.a + rhs.a,
+        }
     }
 }
 
@@ -181,7 +194,7 @@ mod tests {
         // let startColour = Pixel {r: 0, g: 65535, b: 65535};
         // let image = new_blank(startColour, 512, 512);
         // let endColour = Pixel {r: 65535, g: 0, b: 0};
-        // image = filters::colour_replacement(image, startColour, endColour);
+        // image = filters::colour_replacement(image, startColour, endColour, 5);
         // save(image, Path::new("square.png"));
         todo!()
     }
@@ -281,6 +294,60 @@ mod tests {
 
     #[test]
     fn pixel_distance_check() {
-        todo!();
+        let base_pix = Pixel {
+            r: 0,
+            g: 255,
+            b: 100,
+            a: 40,
+        };
+
+        assert_eq!(
+            base_pix.pixel_distance_squared(
+                &(base_pix
+                    + Pixel {
+                        r: 0,
+                        g: 5,
+                        b: 0,
+                        a: 0
+                    })
+            ),
+            u16::pow(5, 2)
+        );
+        assert_eq!(
+            base_pix.pixel_distance_squared(
+                &(base_pix
+                    + Pixel {
+                        r: 3,
+                        g: 6,
+                        b: 2,
+                        a: 7
+                    })
+            ),
+            u16::pow(3 + 6 + 2 + 7, 2)
+        );
+        assert_eq!(
+            base_pix.pixel_distance_squared(
+                &(base_pix
+                    + Pixel {
+                        r: 0,
+                        g: 0,
+                        b: 0,
+                        a: 0
+                    })
+            ),
+            0
+        );
+        assert_eq!(
+            base_pix.pixel_distance_squared(
+                &(base_pix
+                    + Pixel {
+                        r: 1,
+                        g: 0,
+                        b: 5,
+                        a: 0
+                    })
+            ),
+            u16::pow(1 + 5, 2)
+        );
     }
 }
