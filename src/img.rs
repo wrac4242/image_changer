@@ -249,7 +249,6 @@ mod tests {
 
     fn testing_convert(file_name: &str, expected_name: &str, command: impl Fn(Img) -> Img) {
         //testing general closure for reuse
-        let file_name = file_name;
         let in_path_str = "./tests/test_images/".to_string() + file_name;
         let out_path_str = "./tests/test_temp/".to_string() + expected_name;
         let expected_path_str = "./tests/test_expected/".to_string() + expected_name;
