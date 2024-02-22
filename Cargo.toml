@@ -16,5 +16,5 @@ exclude = ["todo.md", ".github/*"]
 image = "0.23.14"
 path-clean = "1.0.1"
 data-encoding = "2.3.2"
-ring = "0.16.20"
+ring = "0.17.8"
 num = "0.4.0"
