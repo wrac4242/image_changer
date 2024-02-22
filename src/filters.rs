@@ -1,4 +1,4 @@
-use crate::img;
+use crate::img::{Img, Pixel};
 use image::DynamicImage;
 use image::Pixel as Pix;
 use std::error;
@@ -13,16 +13,46 @@ type Result<T> = std::result::Result<T, Box<dyn error::Error>>;
 /// save(image, Path::new("square.png"));
 ///```
 
-pub fn to_black_white(image: &mut img::Img) -> Result<()> {
-    let result = per_pixel(image, |(_x, _y), pixel| {
+pub fn to_black_white(image: &mut Img) -> Result<()> {
+    let result = per_pixel(image, |(_x, _y), pixel: Pixel| {
         // https://stackoverflow.com/a/596243
         let end_value =
             (0.299 * pixel.r as f32 + 0.587 * pixel.g as f32 + 0.114 * pixel.b as f32) as u16;
-        img::Pixel {
+        Pixel {
             r: end_value,
             g: end_value,
             b: end_value,
             a: pixel.a,
+        }
+    });
+
+    match result {
+        Ok(()) => Ok(()),
+        Err(e) => Err(e),
+    }
+}
+
+/// Basic colour replacement filter that uses an estimated distance
+/// ```ignore
+/// let startColour = Pixel {r: 0, g: 65535, b: 65535};
+/// let image = new_blank(startColour, 512, 512);
+/// let endColour = Pixel {r: 65535, g: 0, b: 0};
+/// image = filters::colour_replacement(image, startColour, endColour);
+/// save(image, Path::new("square.png"));
+///```
+
+pub fn colour_replacement(
+    image: &mut Img,
+    colour_from: Pixel,
+    colour_too: Pixel,
+    uncertainty: u16,
+) -> Result<()> {
+    let distance = u16::pow(uncertainty, 2);
+    let result = per_pixel(image, |(_x, _y), pixel: Pixel| {
+        if pixel.pixel_distance_squared(&colour_from) <= distance {
+            colour_too
+        } else {
+            pixel
         }
     });
 
@@ -41,14 +71,14 @@ pub fn to_black_white(image: &mut img::Img) -> Result<()> {
 ///    img::Pixel{r: end_value, g: end_value, b: end_value, a: pixel.a}
 /// });
 /// ```
-pub fn per_pixel(img: &mut img::Img, func: fn((u32, u32), img::Pixel) -> img::Pixel) -> Result<()> {
+pub fn per_pixel(img: &mut Img, func: impl Fn((u32, u32), Pixel) -> Pixel) -> Result<()> {
     //convert image to ImageBuffer
     let mut buffer = img.image.to_rgba16();
 
     buffer.enumerate_pixels_mut().for_each(|(x, y, p)| {
         //let r, g, b, a;
         let (r, g, b, a) = p.channels4();
-        let inputs = img::Pixel { r, g, b, a };
+        let inputs = Pixel { r, g, b, a };
 
         // https://stackoverflow.com/a/596243
         let output = func((x, y), inputs);

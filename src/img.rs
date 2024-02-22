@@ -12,6 +12,7 @@ use std::path::Path;
 type Result<T> = std::result::Result<T, Box<dyn error::Error>>;
 
 /// Pixel, the smallest part of an image
+#[derive(Clone, Copy)]
 pub struct Pixel {
     pub(crate) r: u16,
     pub(crate) g: u16,
@@ -50,6 +51,13 @@ impl Pixel {
         let a = num::clamp(self.a as f64 * scale, 0.0, u16::MAX as f64) as u16;
 
         (r, g, b, a)
+    }
+
+    pub fn pixel_distance_squared(&self, distance_from: &Pixel) -> u16 {
+        u16::pow(self.r - distance_from.r, 2)
+            + u16::pow(self.g - distance_from.g, 2)
+            + u16::pow(self.b - distance_from.b, 2)
+            + u16::pow(self.a - distance_from.a, 2)
     }
 }
 
@@ -169,6 +177,16 @@ mod tests {
     }
 
     #[test]
+    fn colour_change() {
+        // let startColour = Pixel {r: 0, g: 65535, b: 65535};
+        // let image = new_blank(startColour, 512, 512);
+        // let endColour = Pixel {r: 65535, g: 0, b: 0};
+        // image = filters::colour_replacement(image, startColour, endColour);
+        // save(image, Path::new("square.png"));
+        todo!()
+    }
+
+    #[test]
     fn dimension() {
         let image = match new_blank(
             Pixel {
@@ -259,5 +277,10 @@ mod tests {
 
         assert_eq!(output_hash, expected_hash);
         let _ignore = fs::remove_file(out_path);
+    }
+
+    #[test]
+    fn pixel_distance_check() {
+        todo!();
     }
 }
