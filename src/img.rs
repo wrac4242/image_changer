@@ -54,11 +54,12 @@ impl Pixel {
         (r, g, b, a)
     }
 
-    pub fn pixel_distance_squared(&self, distance_from: &Pixel) -> u16 {
-        u16::pow(self.r.abs_diff(distance_from.r), 2)
-            + u16::pow(self.g.abs_diff(distance_from.g), 2)
-            + u16::pow(self.b.abs_diff(distance_from.b), 2)
-            + u16::pow(self.a.abs_diff(distance_from.a), 2)
+    pub fn pixel_distance_manhattan(&self, distance_from: &Pixel) -> u16 {
+        let res = self - distance_from;
+        res.r
+            .saturating_add(res.g)
+            .saturating_add(res.b)
+            .saturating_add(res.a)
     }
 }
 
@@ -66,10 +67,22 @@ impl ops::Add for Pixel {
     type Output = Pixel;
     fn add(self, rhs: Pixel) -> Pixel {
         Pixel {
-            r: self.r + rhs.r,
-            g: self.g + rhs.g,
-            b: self.b + rhs.b,
-            a: self.a + rhs.a,
+            r: self.r.saturating_add(rhs.r),
+            g: self.g.saturating_add(rhs.g),
+            b: self.b.saturating_add(rhs.b),
+            a: self.a.saturating_add(rhs.a),
+        }
+    }
+}
+
+impl ops::Sub for &Pixel {
+    type Output = Pixel;
+    fn sub(self, rhs: &Pixel) -> Self::Output {
+        Pixel {
+            r: self.r.abs_diff(rhs.r),
+            g: self.g.abs_diff(rhs.g),
+            b: self.b.abs_diff(rhs.b),
+            a: self.a.abs_diff(rhs.a),
         }
     }
 }
@@ -191,12 +204,29 @@ mod tests {
 
     #[test]
     fn colour_change() {
-        // let startColour = Pixel {r: 0, g: 65535, b: 65535};
-        // let image = new_blank(startColour, 512, 512);
-        // let endColour = Pixel {r: 65535, g: 0, b: 0};
-        // image = filters::colour_replacement(image, startColour, endColour, 5);
-        // save(image, Path::new("square.png"));
-        todo!()
+        let start_colour = Pixel {
+            r: 0,
+            g: 65535,
+            b: 65535,
+            a: 65535,
+        };
+        let end_colour = Pixel {
+            r: 65535,
+            g: 0,
+            b: 0,
+            a: 65535,
+        };
+        testing_convert(
+            "rainbow_gradient.png",
+            "rainbow_gradient_colour_replaced.png",
+            |mut image| {
+                match filters::colour_replacement(&mut image, start_colour, end_colour, 30) {
+                    Ok(()) => (),
+                    Err(e) => panic!("Error: {:?}", e),
+                };
+                image
+            },
+        );
     }
 
     #[test]
@@ -217,7 +247,7 @@ mod tests {
         assert_eq!(dimensions(&image), (512, 512));
     }
 
-    fn testing_convert(file_name: &str, expected_name: &str, command: fn(Img) -> Img) {
+    fn testing_convert(file_name: &str, expected_name: &str, command: impl Fn(Img) -> Img) {
         //testing general closure for reuse
         let file_name = file_name;
         let in_path_str = "./tests/test_images/".to_string() + file_name;
@@ -302,7 +332,7 @@ mod tests {
         };
 
         assert_eq!(
-            base_pix.pixel_distance_squared(
+            base_pix.pixel_distance_manhattan(
                 &(base_pix
                     + Pixel {
                         r: 0,
@@ -311,10 +341,10 @@ mod tests {
                         a: 0
                     })
             ),
-            5 * 5
+            5
         );
         assert_eq!(
-            base_pix.pixel_distance_squared(
+            base_pix.pixel_distance_manhattan(
                 &(base_pix
                     + Pixel {
                         r: 3,
@@ -323,10 +353,10 @@ mod tests {
                         a: 7
                     })
             ),
-            3 * 3 + 6 * 6 + 2 * 2 + 7 * 7
+            3 + 6 + 2 + 7
         );
         assert_eq!(
-            base_pix.pixel_distance_squared(
+            base_pix.pixel_distance_manhattan(
                 &(base_pix
                     + Pixel {
                         r: 0,
@@ -338,7 +368,7 @@ mod tests {
             0
         );
         assert_eq!(
-            base_pix.pixel_distance_squared(
+            base_pix.pixel_distance_manhattan(
                 &(base_pix
                     + Pixel {
                         r: 1,
@@ -347,7 +377,20 @@ mod tests {
                         a: 0
                     })
             ),
-            1 * 1 + 5 * 5
+            1 + 5
+        );
+
+        assert_eq!(
+            base_pix.pixel_distance_manhattan(
+                &(base_pix
+                    + Pixel {
+                        r: 55555,
+                        g: 11231,
+                        b: 0,
+                        a: 0
+                    })
+            ),
+            55555_u16.saturating_add(11231_u16)
         );
     }
 }

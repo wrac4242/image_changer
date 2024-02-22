@@ -34,9 +34,9 @@ pub fn to_black_white(image: &mut Img) -> Result<()> {
 
 /// Basic colour replacement filter that uses an estimated distance
 /// ```ignore
-/// let startColour = Pixel {r: 0, g: 65535, b: 65535};
+/// let startColour = Pixel {r: 0, g: 65535, b: 65535, a: 65535};
 /// let image = new_blank(startColour, 512, 512);
-/// let endColour = Pixel {r: 65535, g: 0, b: 0};
+/// let endColour = Pixel {r: 65535, g: 0, b: 0, a: 65535};
 /// image = filters::colour_replacement(image, startColour, endColour, 5);
 /// save(image, Path::new("square.png"));
 ///```
@@ -49,7 +49,7 @@ pub fn colour_replacement(
 ) -> Result<()> {
     let distance = u16::pow(uncertainty, 2);
     let result = per_pixel(image, |(_x, _y), pixel: Pixel| {
-        if pixel.pixel_distance_squared(&colour_from) <= distance {
+        if pixel.pixel_distance_manhattan(&colour_from) <= distance {
             colour_too
         } else {
             pixel
