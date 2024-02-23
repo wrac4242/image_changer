@@ -13,7 +13,7 @@ exclude = ["todo.md", ".github/*"]
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-image = "0.23.14"
+image = "0.24.9"
 path-clean = "1.0.1"
 data-encoding = "2.3.2"
 ring = "0.17.8"

@@ -1,6 +1,6 @@
 use crate::img::{Img, Pixel};
-use image::DynamicImage;
 use image::Pixel as Pix;
+use image::{DynamicImage, Rgba};
 use std::error;
 
 // Change the alias to `Box<error::Error>`.
@@ -77,13 +77,18 @@ pub fn per_pixel(img: &mut Img, func: impl Fn((u32, u32), Pixel) -> Pixel) -> Re
 
     buffer.enumerate_pixels_mut().for_each(|(x, y, p)| {
         //let r, g, b, a;
-        let (r, g, b, a) = p.channels4();
-        let inputs = Pixel { r, g, b, a };
+        let pixel_slice: &[u16] = p.channels();
+        let inputs = Pixel {
+            r: pixel_slice[0],
+            g: pixel_slice[1],
+            b: pixel_slice[2],
+            a: pixel_slice[3],
+        };
 
         // https://stackoverflow.com/a/596243
         let output = func((x, y), inputs);
 
-        *p = Pix::from_channels(output.r, output.g, output.b, output.a);
+        *p = Rgba([output.r, output.g, output.b, output.a]);
     });
     //convert back to image and save
     img.image = DynamicImage::ImageRgba16(buffer);
